@@ -7,6 +7,10 @@ Rviz+슬라이더 실행
 ```bash
 ros2 launch mirobot_description mirobot_rviz_control.launch.py
 ```
+둘다 같이 실행
+```bash
+ros2 launch mirobot_driver mirobot_full_control.launch.py
+```
 ## 참고 깃허브
 [wlkata ROS2 mirobot package](https://github.com/wlkata/ROS2_WLKATA)
 <br />
