@@ -1,1 +1,0 @@
-/home/kjy/Mirobot_ros2/build/mirobot_description/ament_cmake_environment_hooks/local_setup.zsh

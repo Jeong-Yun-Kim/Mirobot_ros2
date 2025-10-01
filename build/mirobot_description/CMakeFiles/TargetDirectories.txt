@@ -1,9 +1,0 @@
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/uninstall.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/mirobot_description_uninstall.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/test.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/edit_cache.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/rebuild_cache.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/list_install_components.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/install.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/install/local.dir
-/home/kjy/Mirobot_ros2/build/mirobot_description/CMakeFiles/install/strip.dir

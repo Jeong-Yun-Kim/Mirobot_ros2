@@ -1,1 +1,0 @@
-/home/kjy/Mirobot_ros2/build/mirobot_driver/launch/mirobot_driver.launch.py
