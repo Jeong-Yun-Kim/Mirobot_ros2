@@ -1,0 +1,1 @@
+/home/kjy/Mirobot_ros2/build/mirobot_description/ament_cmake_core/mirobot_descriptionConfig-version.cmake

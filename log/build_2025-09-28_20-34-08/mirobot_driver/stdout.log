@@ -1,0 +1,25 @@
+running develop
+running egg_info
+creating mirobot_driver.egg-info
+writing mirobot_driver.egg-info/PKG-INFO
+writing dependency_links to mirobot_driver.egg-info/dependency_links.txt
+writing entry points to mirobot_driver.egg-info/entry_points.txt
+writing requirements to mirobot_driver.egg-info/requires.txt
+writing top-level names to mirobot_driver.egg-info/top_level.txt
+writing manifest file 'mirobot_driver.egg-info/SOURCES.txt'
+reading manifest file 'mirobot_driver.egg-info/SOURCES.txt'
+writing manifest file 'mirobot_driver.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot-driver.egg-link (link to .)
+Installing serial_bridge script to /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/mirobot_driver
+
+Installed /home/kjy/Mirobot_ros2/build/mirobot_driver
+running symlink_data
+creating /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index
+creating /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index/resource_index
+creating /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index/resource_index/packages
+symbolically linking /home/kjy/Mirobot_ros2/build/mirobot_driver/resource/mirobot_driver -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index/resource_index/packages
+symbolically linking /home/kjy/Mirobot_ros2/build/mirobot_driver/package.xml -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver
+creating /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+symbolically linking /home/kjy/Mirobot_ros2/build/mirobot_driver/launch/mirobot_full_control.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+symbolically linking /home/kjy/Mirobot_ros2/build/mirobot_driver/launch/mirobot_driver.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
