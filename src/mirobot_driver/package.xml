@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mirobot_driver</name>
+  <version>0.0.1</version>
+  <description>Mirobot serial bridge (joint commands → serial G-code)</description>
+  <maintainer email="you@example.com">you</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <!-- pyserial은 pip로 설치 권장; 필요시 아래처럼 선언 가능
+  <exec_depend>python3-serial</exec_depend>
+  -->
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
