@@ -1,0 +1,1 @@
+/home/kjy/Mirobot_ros2/build/mirobot_master_slave/launch/mirobot_master_slave.launch.py

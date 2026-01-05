@@ -1,0 +1,1 @@
+/home/kjy/Mirobot_ros2/src/mirobot_driver/launch/mirobot_full_control.launch.py

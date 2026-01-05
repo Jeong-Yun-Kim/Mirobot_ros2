@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+launch/dual_mirobot_full_control.launch.py
+launch/mirobot_master_slave.launch.py
+mirobot_master_slave/__init__.py
+mirobot_master_slave/init_joint_once.py
+mirobot_master_slave.egg-info/PKG-INFO
+mirobot_master_slave.egg-info/SOURCES.txt
+mirobot_master_slave.egg-info/dependency_links.txt
+mirobot_master_slave.egg-info/entry_points.txt
+mirobot_master_slave.egg-info/requires.txt
+mirobot_master_slave.egg-info/top_level.txt
+mirobot_master_slave.egg-info/zip-safe
+resource/mirobot_master_slave
+rviz/dual_mirobots.rviz

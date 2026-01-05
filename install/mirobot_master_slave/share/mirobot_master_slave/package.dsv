@@ -1,0 +1,9 @@
+source;share/mirobot_master_slave/hook/pythonpath.ps1
+source;share/mirobot_master_slave/hook/pythonpath.dsv
+source;share/mirobot_master_slave/hook/pythonpath.sh
+source;share/mirobot_master_slave/hook/ament_prefix_path.ps1
+source;share/mirobot_master_slave/hook/ament_prefix_path.dsv
+source;share/mirobot_master_slave/hook/ament_prefix_path.sh
+source;../../build/mirobot_master_slave/share/mirobot_master_slave/hook/pythonpath_develop.ps1
+source;../../build/mirobot_master_slave/share/mirobot_master_slave/hook/pythonpath_develop.dsv
+source;../../build/mirobot_master_slave/share/mirobot_master_slave/hook/pythonpath_develop.sh

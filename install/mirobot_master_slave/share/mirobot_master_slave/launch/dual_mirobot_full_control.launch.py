@@ -1,0 +1,1 @@
+/home/kjy/Mirobot_ros2/build/mirobot_master_slave/launch/dual_mirobot_full_control.launch.py

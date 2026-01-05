@@ -1,0 +1,45 @@
+[0.024s] Invoking command in '/home/kjy/Mirobot_ros2/build/mirobot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kjy/Mirobot_ros2/install/vision_robot:/home/kjy/Mirobot_ros2/install/mirobot_master_slave:/home/kjy/Mirobot_ros2/install/mirobot_driver:/opt/ros/humble /usr/bin/cmake --build /home/kjy/Mirobot_ros2/build/mirobot_description -- -j16 -l16
+[0.429s] Invoked command in '/home/kjy/Mirobot_ros2/build/mirobot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kjy/Mirobot_ros2/install/vision_robot:/home/kjy/Mirobot_ros2/install/mirobot_master_slave:/home/kjy/Mirobot_ros2/install/mirobot_driver:/opt/ros/humble /usr/bin/cmake --build /home/kjy/Mirobot_ros2/build/mirobot_description -- -j16 -l16
+[0.442s] Invoking command in '/home/kjy/Mirobot_ros2/build/mirobot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kjy/Mirobot_ros2/install/vision_robot:/home/kjy/Mirobot_ros2/install/mirobot_master_slave:/home/kjy/Mirobot_ros2/install/mirobot_driver:/opt/ros/humble /usr/bin/cmake --install /home/kjy/Mirobot_ros2/build/mirobot_description
+[0.449s] -- Install configuration: ""
+[0.450s] -- Execute custom install script
+[0.450s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//launch/mirobot_description.launch.py
+[0.451s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//launch/mirobot_isaac_control.launch.py
+[0.451s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//launch/mirobot_rviz_control.launch.py
+[0.451s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link1.STL
+[0.451s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link2.STL
+[0.452s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link3.STL
+[0.452s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link4.STL
+[0.452s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link5.STL
+[0.452s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/Link6.STL
+[0.452s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//meshes/base_link.STL
+[0.453s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//rviz/description.rviz
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_gripper.urdf
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2 (copy).urdf
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2.csv
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2.urdf
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2.xacro
+[0.454s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2.zip
+[0.455s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2/Link6.usd
+[0.455s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2/mirobot_urdf_2.usd
+[0.455s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2/mirobot_urdf_2_ee.usd
+[0.455s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/mirobot_urdf_2_original.urdf
+[0.455s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/rmpflow/denso_rmpflow_common.yaml
+[0.456s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/rmpflow/mirrobot_rmpflow_common.yaml
+[0.456s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description//urdf/rmpflow/robot_descriptor.yaml
+[0.456s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/ament_index/resource_index/package_run_dependencies/mirobot_description
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/ament_index/resource_index/parent_prefix_path/mirobot_description
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/environment/ament_prefix_path.sh
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/environment/ament_prefix_path.dsv
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/environment/path.sh
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/environment/path.dsv
+[0.457s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/local_setup.bash
+[0.458s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/local_setup.sh
+[0.458s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/local_setup.zsh
+[0.458s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/local_setup.dsv
+[0.458s] -- Symlinking: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/package.dsv
+[0.467s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/ament_index/resource_index/packages/mirobot_description
+[0.468s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/cmake/mirobot_descriptionConfig.cmake
+[0.468s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/cmake/mirobot_descriptionConfig-version.cmake
+[0.468s] -- Up-to-date symlink: /home/kjy/Mirobot_ros2/install/mirobot_description/share/mirobot_description/package.xml
+[0.470s] Invoked command in '/home/kjy/Mirobot_ros2/build/mirobot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/kjy/Mirobot_ros2/install/vision_robot:/home/kjy/Mirobot_ros2/install/mirobot_master_slave:/home/kjy/Mirobot_ros2/install/mirobot_driver:/opt/ros/humble /usr/bin/cmake --install /home/kjy/Mirobot_ros2/build/mirobot_description

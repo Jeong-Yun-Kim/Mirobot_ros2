@@ -1,0 +1,17 @@
+[0.790s] Invoking command in '/home/kjy/Mirobot_ros2/build/vision_robot': PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/kjy/Mirobot_ros2/build/vision_robot/build --no-deps symlink_data
+[0.936s] running develop
+[1.013s] running egg_info
+[1.013s] writing vision_robot.egg-info/PKG-INFO
+[1.014s] writing dependency_links to vision_robot.egg-info/dependency_links.txt
+[1.014s] writing entry points to vision_robot.egg-info/entry_points.txt
+[1.014s] writing requirements to vision_robot.egg-info/requires.txt
+[1.014s] writing top-level names to vision_robot.egg-info/top_level.txt
+[1.014s] reading manifest file 'vision_robot.egg-info/SOURCES.txt'
+[1.015s] writing manifest file 'vision_robot.egg-info/SOURCES.txt'
+[1.015s] running build_ext
+[1.016s] Creating /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision-robot.egg-link (link to .)
+[1.016s] Installing vision_robot_node script to /home/kjy/Mirobot_ros2/install/vision_robot/lib/vision_robot
+[1.016s] 
+[1.016s] Installed /home/kjy/Mirobot_ros2/build/vision_robot
+[1.016s] running symlink_data
+[1.051s] Invoked command in '/home/kjy/Mirobot_ros2/build/vision_robot' returned '0': PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/kjy/Mirobot_ros2/build/vision_robot/build --no-deps symlink_data

@@ -1,0 +1,16 @@
+package.xml
+setup.cfg
+setup.py
+data/static_board_pose.npz
+launch/vision_robot.launch.py
+resource/vision_robot
+vision_robot/__init__.py
+vision_robot/camera_test.py
+vision_robot/vision_robot_node.py
+vision_robot.egg-info/PKG-INFO
+vision_robot.egg-info/SOURCES.txt
+vision_robot.egg-info/dependency_links.txt
+vision_robot.egg-info/entry_points.txt
+vision_robot.egg-info/requires.txt
+vision_robot.egg-info/top_level.txt
+vision_robot.egg-info/zip-safe
