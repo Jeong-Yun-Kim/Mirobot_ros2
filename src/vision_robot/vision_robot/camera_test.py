@@ -1,5 +1,5 @@
 import cv2
-cap = cv2.VideoCapture(6, cv2.CAP_V4L2)
+cap = cv2.VideoCapture(4, cv2.CAP_V4L2)
 
 if not cap.isOpened():
     print("camera open fail")

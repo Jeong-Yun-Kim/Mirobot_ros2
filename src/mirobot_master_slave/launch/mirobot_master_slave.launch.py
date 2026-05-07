@@ -117,7 +117,7 @@ def generate_launch_description():
         declare_args + [
             bridge1, bridge2,
             rsp1, rsp2,
-            init1, init2,   # ⭐⭐⭐ 이게 빠져있었음 ⭐⭐⭐
+            init1, init2,  
         ]
     )
 

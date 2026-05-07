@@ -5,6 +5,7 @@ launch/dual_mirobot_full_control.launch.py
 launch/mirobot_master_slave.launch.py
 mirobot_master_slave/__init__.py
 mirobot_master_slave/init_joint_once.py
+mirobot_master_slave/server_bridge.py
 mirobot_master_slave.egg-info/PKG-INFO
 mirobot_master_slave.egg-info/SOURCES.txt
 mirobot_master_slave.egg-info/dependency_links.txt

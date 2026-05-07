@@ -6,6 +6,8 @@ launch/vision_robot.launch.py
 resource/vision_robot
 vision_robot/__init__.py
 vision_robot/camera_test.py
+vision_robot/order_yolo_sequencer.py
+vision_robot/vision_cubes_publisher.py
 vision_robot/vision_robot_node.py
 vision_robot.egg-info/PKG-INFO
 vision_robot.egg-info/SOURCES.txt
