@@ -1,0 +1,3 @@
+[console_scripts]
+serial_bridge = mirobot_driver.serial_bridge:main
+

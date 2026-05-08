@@ -1,0 +1,8 @@
+# Install inside your existing yolov5_env if these are missing.
+# ROS2 packages such as rclpy/std_msgs/domain_bridge should be installed with apt.
+pyserial
+numpy
+opencv-python
+torch
+pandas
+PyYAML

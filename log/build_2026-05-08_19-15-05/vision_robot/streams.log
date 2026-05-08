@@ -1,0 +1,47 @@
+[0.742s] Invoking command in '/home/kjy/Mirobot_ros2/build/vision_robot': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/kjy/Mirobot_ros2/build/vision_robot/build
+[0.887s] running develop
+[0.973s] Removing /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision-robot.egg-link (link to .)
+[0.994s] Invoked command in '/home/kjy/Mirobot_ros2/build/vision_robot' returned '0': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/kjy/Mirobot_ros2/build/vision_robot/build
+[0.995s] Invoking command in '/home/kjy/Mirobot_ros2/src/vision_robot': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/vision_robot build --build-base /home/kjy/Mirobot_ros2/build/vision_robot/build install --record /home/kjy/Mirobot_ros2/build/vision_robot/install.log --single-version-externally-managed install_data --force
+[1.128s] running egg_info
+[1.128s] writing ../../build/vision_robot/vision_robot.egg-info/PKG-INFO
+[1.128s] writing dependency_links to ../../build/vision_robot/vision_robot.egg-info/dependency_links.txt
+[1.128s] writing entry points to ../../build/vision_robot/vision_robot.egg-info/entry_points.txt
+[1.128s] writing requirements to ../../build/vision_robot/vision_robot.egg-info/requires.txt
+[1.128s] writing top-level names to ../../build/vision_robot/vision_robot.egg-info/top_level.txt
+[1.134s] reading manifest file '../../build/vision_robot/vision_robot.egg-info/SOURCES.txt'
+[1.134s] writing manifest file '../../build/vision_robot/vision_robot.egg-info/SOURCES.txt'
+[1.135s] running build
+[1.135s] running build_py
+[1.135s] creating /home/kjy/Mirobot_ros2/build/vision_robot/build
+[1.135s] creating /home/kjy/Mirobot_ros2/build/vision_robot/build/lib
+[1.135s] creating /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.135s] copying vision_robot/vision_robot_node.py -> /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.135s] copying vision_robot/vision_cubes_publisher.py -> /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.135s] copying vision_robot/__init__.py -> /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.135s] copying vision_robot/camera_test.py -> /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.135s] copying vision_robot/order_yolo_sequencer.py -> /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot
+[1.136s] running install
+[1.136s] running install_lib
+[1.136s] creating /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.136s] copying /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot/vision_robot_node.py -> /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.136s] copying /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot/vision_cubes_publisher.py -> /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.137s] copying /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot/__init__.py -> /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.137s] copying /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot/camera_test.py -> /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.137s] copying /home/kjy/Mirobot_ros2/build/vision_robot/build/lib/vision_robot/order_yolo_sequencer.py -> /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot
+[1.137s] byte-compiling /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot/vision_robot_node.py to vision_robot_node.cpython-310.pyc
+[1.140s] byte-compiling /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot/vision_cubes_publisher.py to vision_cubes_publisher.cpython-310.pyc
+[1.141s] byte-compiling /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot/__init__.py to __init__.cpython-310.pyc
+[1.141s] byte-compiling /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot/camera_test.py to camera_test.cpython-310.pyc
+[1.141s] byte-compiling /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot/order_yolo_sequencer.py to order_yolo_sequencer.cpython-310.pyc
+[1.142s] running install_data
+[1.142s] copying resource/vision_robot -> /home/kjy/Mirobot_ros2/install/vision_robot/share/ament_index/resource_index/packages
+[1.142s] copying package.xml -> /home/kjy/Mirobot_ros2/install/vision_robot/share/vision_robot
+[1.143s] copying launch/vision_robot.launch.py -> /home/kjy/Mirobot_ros2/install/vision_robot/share/vision_robot/launch
+[1.144s] copying data/static_board_pose.npz -> /home/kjy/Mirobot_ros2/install/vision_robot/share/vision_robot/data
+[1.146s] running install_egg_info
+[1.147s] Copying ../../build/vision_robot/vision_robot.egg-info to /home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages/vision_robot-0.0.0-py3.10.egg-info
+[1.147s] running install_scripts
+[1.159s] Installing vision_robot_node script to /home/kjy/Mirobot_ros2/install/vision_robot/lib/vision_robot
+[1.159s] writing list of installed files to '/home/kjy/Mirobot_ros2/build/vision_robot/install.log'
+[1.177s] Invoked command in '/home/kjy/Mirobot_ros2/src/vision_robot' returned '0': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/vision_robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/vision_robot/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/vision_robot build --build-base /home/kjy/Mirobot_ros2/build/vision_robot/build install --record /home/kjy/Mirobot_ros2/build/vision_robot/install.log --single-version-externally-managed install_data --force

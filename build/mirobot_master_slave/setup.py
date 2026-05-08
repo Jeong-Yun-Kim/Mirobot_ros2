@@ -1,1 +1,0 @@
-/home/kjy/Mirobot_ros2/src/mirobot_master_slave/setup.py

@@ -1,0 +1,23 @@
+[0.324s] Invoking command in '/home/kjy/Mirobot_ros2/src/mirobot_master_slave': AMENT_PREFIX_PATH=/home/kjy/Mirobot_ros2/install/mirobot_driver:/home/kjy/Mirobot_ros2/install/mirobot_description:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/kjy/Mirobot_ros2/install/mirobot_description PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_master_slave/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/python3.10/site-packages:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mirobot_master_slave build --build-base /home/kjy/Mirobot_ros2/build/mirobot_master_slave/build install --record /home/kjy/Mirobot_ros2/build/mirobot_master_slave/install.log --single-version-externally-managed install_data
+[0.441s] running egg_info
+[0.441s] writing ../../build/mirobot_master_slave/mirobot_master_slave.egg-info/PKG-INFO
+[0.441s] writing dependency_links to ../../build/mirobot_master_slave/mirobot_master_slave.egg-info/dependency_links.txt
+[0.441s] writing entry points to ../../build/mirobot_master_slave/mirobot_master_slave.egg-info/entry_points.txt
+[0.441s] writing requirements to ../../build/mirobot_master_slave/mirobot_master_slave.egg-info/requires.txt
+[0.441s] writing top-level names to ../../build/mirobot_master_slave/mirobot_master_slave.egg-info/top_level.txt
+[0.442s] reading manifest file '../../build/mirobot_master_slave/mirobot_master_slave.egg-info/SOURCES.txt'
+[0.442s] writing manifest file '../../build/mirobot_master_slave/mirobot_master_slave.egg-info/SOURCES.txt'
+[0.442s] running build
+[0.443s] running build_py
+[0.443s] running install
+[0.443s] running install_lib
+[0.443s] running install_data
+[0.444s] running install_egg_info
+[0.444s] removing '/home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/python3.10/site-packages/mirobot_master_slave-0.0.0-py3.10.egg-info' (and everything under it)
+[0.445s] Copying ../../build/mirobot_master_slave/mirobot_master_slave.egg-info to /home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/python3.10/site-packages/mirobot_master_slave-0.0.0-py3.10.egg-info
+[0.445s] running install_scripts
+[0.456s] Installing init_joint_once script to /home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/mirobot_master_slave
+[0.456s] Installing master_cli script to /home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/mirobot_master_slave
+[0.456s] Installing slave_replicator script to /home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/mirobot_master_slave
+[0.456s] writing list of installed files to '/home/kjy/Mirobot_ros2/build/mirobot_master_slave/install.log'
+[0.470s] Invoked command in '/home/kjy/Mirobot_ros2/src/mirobot_master_slave' returned '0': AMENT_PREFIX_PATH=/home/kjy/Mirobot_ros2/install/mirobot_driver:/home/kjy/Mirobot_ros2/install/mirobot_description:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/kjy/Mirobot_ros2/install/mirobot_description PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_master_slave/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_master_slave/lib/python3.10/site-packages:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mirobot_master_slave build --build-base /home/kjy/Mirobot_ros2/build/mirobot_master_slave/build install --record /home/kjy/Mirobot_ros2/build/mirobot_master_slave/install.log --single-version-externally-managed install_data

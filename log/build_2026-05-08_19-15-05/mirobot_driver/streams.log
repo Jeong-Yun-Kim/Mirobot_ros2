@@ -1,0 +1,39 @@
+[0.757s] Invoking command in '/home/kjy/Mirobot_ros2/build/mirobot_driver': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/kjy/Mirobot_ros2/build/mirobot_driver/build
+[0.910s] running develop
+[1.002s] Removing /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot-driver.egg-link (link to .)
+[1.026s] Invoked command in '/home/kjy/Mirobot_ros2/build/mirobot_driver' returned '0': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --uninstall --editable --build-directory /home/kjy/Mirobot_ros2/build/mirobot_driver/build
+[1.027s] Invoking command in '/home/kjy/Mirobot_ros2/src/mirobot_driver': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mirobot_driver build --build-base /home/kjy/Mirobot_ros2/build/mirobot_driver/build install --record /home/kjy/Mirobot_ros2/build/mirobot_driver/install.log --single-version-externally-managed install_data --force
+[1.165s] running egg_info
+[1.165s] writing ../../build/mirobot_driver/mirobot_driver.egg-info/PKG-INFO
+[1.165s] writing dependency_links to ../../build/mirobot_driver/mirobot_driver.egg-info/dependency_links.txt
+[1.165s] writing entry points to ../../build/mirobot_driver/mirobot_driver.egg-info/entry_points.txt
+[1.165s] writing requirements to ../../build/mirobot_driver/mirobot_driver.egg-info/requires.txt
+[1.165s] writing top-level names to ../../build/mirobot_driver/mirobot_driver.egg-info/top_level.txt
+[1.167s] reading manifest file '../../build/mirobot_driver/mirobot_driver.egg-info/SOURCES.txt'
+[1.167s] writing manifest file '../../build/mirobot_driver/mirobot_driver.egg-info/SOURCES.txt'
+[1.167s] running build
+[1.168s] running build_py
+[1.168s] creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build
+[1.168s] creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib
+[1.168s] creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+[1.168s] copying mirobot_driver/serial_bridge.py -> /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+[1.168s] copying mirobot_driver/__init__.py -> /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+[1.168s] running install
+[1.168s] running install_lib
+[1.169s] creating /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+[1.169s] copying /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver/serial_bridge.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+[1.169s] copying /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver/__init__.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+[1.169s] byte-compiling /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver/serial_bridge.py to serial_bridge.cpython-310.pyc
+[1.171s] byte-compiling /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver/__init__.py to __init__.cpython-310.pyc
+[1.171s] running install_data
+[1.171s] copying resource/mirobot_driver -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index/resource_index/packages
+[1.171s] copying package.xml -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver
+[1.171s] copying launch/mirobot_full_control.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+[1.172s] copying launch/mirobot_rviz.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+[1.172s] copying launch/mirobot_driver.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+[1.173s] running install_egg_info
+[1.174s] Copying ../../build/mirobot_driver/mirobot_driver.egg-info to /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver-0.0.0-py3.10.egg-info
+[1.175s] running install_scripts
+[1.188s] Installing serial_bridge script to /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/mirobot_driver
+[1.188s] writing list of installed files to '/home/kjy/Mirobot_ros2/build/mirobot_driver/install.log'
+[1.204s] Invoked command in '/home/kjy/Mirobot_ros2/src/mirobot_driver' returned '0': PS1=(yolov5_env) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ PYTHONPATH=/home/kjy/Mirobot_ros2/build/mirobot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(yolov5_env) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mirobot_driver build --build-base /home/kjy/Mirobot_ros2/build/mirobot_driver/build install --record /home/kjy/Mirobot_ros2/build/mirobot_driver/install.log --single-version-externally-managed install_data --force

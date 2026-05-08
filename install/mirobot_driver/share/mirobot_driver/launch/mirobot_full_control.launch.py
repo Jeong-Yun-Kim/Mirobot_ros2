@@ -1,1 +1,53 @@
-/home/kjy/Mirobot_ros2/build/mirobot_driver/launch/mirobot_full_control.launch.py
+from launch import LaunchDescription
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+import os
+
+def generate_launch_description():
+    urdf_file = os.path.join(
+        get_package_share_directory('mirobot_description'),
+        'urdf',
+        'mirobot_urdf_2.urdf'
+    )
+
+    return LaunchDescription([
+        Node(
+	    package='mirobot_driver',
+	    executable='serial_bridge',
+	    name='mirobot_driver',
+	    output='screen',
+	    parameters=[
+		{'port': '/dev/ttyUSB0'},
+		{'baud': 115200},         
+		{'dry_run': False},       
+		{'protocol': 'gcode_example'}, 
+            ]
+	
+        ),
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            name='robot_state_publisher',
+            output='screen',
+            parameters=[{'robot_description': open(urdf_file).read()}]
+        ),
+        Node(
+            package='joint_state_publisher_gui',
+            executable='joint_state_publisher_gui',
+            name='joint_state_publisher_gui',
+            output='screen',
+            remappings=[('/joint_states', '/target_joint_states')]
+        ),
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            output='screen',
+            arguments=['-d', os.path.join(
+                get_package_share_directory('mirobot_description'),
+                'rviz',
+                'description.rviz'
+            )]
+        ),
+    ])
+

@@ -17,7 +17,7 @@ def generate_launch_description():
 	    name='mirobot_driver',
 	    output='screen',
 	    parameters=[
-		{'port': '/dev/ttyUSB1'},
+		{'port': '/dev/ttyUSB0'},
 		{'baud': 115200},         
 		{'dry_run': False},       
 		{'protocol': 'gcode_example'}, 

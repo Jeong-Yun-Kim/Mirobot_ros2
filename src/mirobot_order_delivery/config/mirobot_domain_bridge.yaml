@@ -1,0 +1,24 @@
+# Domain bridge for Raspberry Pi order server <-> laptop Mirobot worker.
+# Default direction is server_domain -> robot_domain.
+# Launch files can override from_domain/to_domain with server_domain:= and robot_domain:=.
+name: mirobot_order_bridge
+from_domain: 18
+to_domain: 30
+
+topics:
+  # Raspberry Pi server publishes orders/stops; laptop robot worker receives them.
+  /robot/cmd:
+    type: std_msgs/msg/String
+
+  /robot/stop:
+    type: std_msgs/msg/String
+
+  # Laptop robot worker publishes completion; Raspberry Pi server receives it.
+  /robot/done:
+    type: std_msgs/msg/String
+    reversed: true
+
+  # Optional debug/status back to the server domain. The server does not need to use it.
+  /robot/status:
+    type: std_msgs/msg/String
+    reversed: true

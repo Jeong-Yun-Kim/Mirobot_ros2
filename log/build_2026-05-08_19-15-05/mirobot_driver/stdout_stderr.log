@@ -1,0 +1,35 @@
+running develop
+Removing /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot-driver.egg-link (link to .)
+running egg_info
+writing ../../build/mirobot_driver/mirobot_driver.egg-info/PKG-INFO
+writing dependency_links to ../../build/mirobot_driver/mirobot_driver.egg-info/dependency_links.txt
+writing entry points to ../../build/mirobot_driver/mirobot_driver.egg-info/entry_points.txt
+writing requirements to ../../build/mirobot_driver/mirobot_driver.egg-info/requires.txt
+writing top-level names to ../../build/mirobot_driver/mirobot_driver.egg-info/top_level.txt
+reading manifest file '../../build/mirobot_driver/mirobot_driver.egg-info/SOURCES.txt'
+writing manifest file '../../build/mirobot_driver/mirobot_driver.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build
+creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib
+creating /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+copying mirobot_driver/serial_bridge.py -> /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+copying mirobot_driver/__init__.py -> /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver
+running install
+running install_lib
+creating /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+copying /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver/serial_bridge.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+copying /home/kjy/Mirobot_ros2/build/mirobot_driver/build/lib/mirobot_driver/__init__.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver
+byte-compiling /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver/serial_bridge.py to serial_bridge.cpython-310.pyc
+byte-compiling /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver/__init__.py to __init__.cpython-310.pyc
+running install_data
+copying resource/mirobot_driver -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/ament_index/resource_index/packages
+copying package.xml -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver
+copying launch/mirobot_full_control.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+copying launch/mirobot_rviz.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+copying launch/mirobot_driver.launch.py -> /home/kjy/Mirobot_ros2/install/mirobot_driver/share/mirobot_driver/launch
+running install_egg_info
+Copying ../../build/mirobot_driver/mirobot_driver.egg-info to /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/python3.10/site-packages/mirobot_driver-0.0.0-py3.10.egg-info
+running install_scripts
+Installing serial_bridge script to /home/kjy/Mirobot_ros2/install/mirobot_driver/lib/mirobot_driver
+writing list of installed files to '/home/kjy/Mirobot_ros2/build/mirobot_driver/install.log'
