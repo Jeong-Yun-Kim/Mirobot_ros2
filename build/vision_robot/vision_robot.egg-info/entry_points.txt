@@ -1,2 +1,0 @@
-[console_scripts]
-vision_robot_node = vision_robot.vision_robot_node:main
