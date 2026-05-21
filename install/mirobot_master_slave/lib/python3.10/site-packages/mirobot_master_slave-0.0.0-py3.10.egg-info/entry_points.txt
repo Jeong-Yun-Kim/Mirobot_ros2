@@ -1,4 +1,0 @@
-[console_scripts]
-init_joint_once = mirobot_master_slave.init_joint_once:main
-master_cli = mirobot_master_slave.mirobot_xyz_cli:main
-slave_replicator = mirobot_master_slave.mirobot_slave_replicator:main

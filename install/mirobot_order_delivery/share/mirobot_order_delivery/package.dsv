@@ -1,6 +1,0 @@
-source;share/mirobot_order_delivery/hook/pythonpath.ps1
-source;share/mirobot_order_delivery/hook/pythonpath.dsv
-source;share/mirobot_order_delivery/hook/pythonpath.sh
-source;share/mirobot_order_delivery/hook/ament_prefix_path.ps1
-source;share/mirobot_order_delivery/hook/ament_prefix_path.dsv
-source;share/mirobot_order_delivery/hook/ament_prefix_path.sh
