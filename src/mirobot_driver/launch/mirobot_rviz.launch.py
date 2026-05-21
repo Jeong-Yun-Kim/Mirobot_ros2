@@ -20,7 +20,7 @@ def generate_launch_description():
                 {'baud': 115200},
                 {'dry_run': False},
                 {'protocol': 'gcode_example'},
-                {'feedrate': 2000.0},
+                {'feedrate': 2000},
                 {'joint_order': ['joint1','joint2','joint3','joint4','joint5','joint6']},
             ],
             # ❌ remap 절대 넣지 마 (지금 너 파일엔 이게 문제였음)

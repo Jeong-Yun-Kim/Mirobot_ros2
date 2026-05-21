@@ -7,7 +7,7 @@ from typing import Callable, Optional, Tuple
 
 import serial
 
-from .geometry import Bounds, Vec3, clamp, clamp_xyz, make_bezier_arc
+from .geometry import Bounds, Vec3, clamp, clamp_xyz_report, make_bezier_arc
 
 EOL_DEFAULT = "\r\n"
 
@@ -43,6 +43,10 @@ class RobotConfig:
     command_timeout_s: float = 12.0
     toggle_dtr_rts: bool = True
     verbose_tx: bool = True
+    use_m400: bool = False
+    use_status_wait: bool = False
+    motion_settle_s: float = 0.20
+    status_wait_timeout_s: float = 1.0
 
     @property
     def bounds(self) -> Bounds:
@@ -52,11 +56,10 @@ class RobotConfig:
 class MirobotGCode:
     """Small serial G-code driver for the WLKATA Mirobot.
 
-    It intentionally mirrors the uploaded scripts:
-      - Cartesian init: M21, M20, G90, M50
-      - move: G1 X.. Y.. Z.. F..
-      - pump: M3S1000 / M3S0
-      - optional motion wait: M400
+    M400 is disabled by default because your firmware returned
+    `Error,E000,Invalid gcode ID:23`.  The old code only warned, but the warning
+    made debugging noisy.  If your firmware later supports M400, set
+    motion.use_m400=true in the YAML.
     """
 
     def __init__(self, cfg: RobotConfig, logger=None):
@@ -65,10 +68,21 @@ class MirobotGCode:
         self.ser: Optional[serial.Serial] = None
 
     def log(self, level: str, msg: str) -> None:
-        if self.logger is not None and hasattr(self.logger, level):
-            getattr(self.logger, level)(msg)
-        else:
-            print(f"[{level.upper()}] {msg}")
+        try:
+            if self.logger is not None:
+                norm = str(level).lower()
+                if norm in {"warn", "warning"}:
+                    self.logger.warning(msg)
+                elif norm == "error":
+                    self.logger.error(msg)
+                elif norm == "debug":
+                    self.logger.debug(msg)
+                else:
+                    self.logger.info(msg)
+                return
+        except Exception:
+            pass
+        print(f"[{str(level).upper()}] {msg}")
 
     @property
     def connected(self) -> bool:
@@ -117,10 +131,10 @@ class MirobotGCode:
         n = self.ser.in_waiting
         return self.ser.read(n).decode(errors="ignore") if n else ""
 
-    def tx(self, cmd: str) -> None:
+    def tx(self, cmd: str, *, log: bool = True) -> None:
         if self.ser is None:
             raise RuntimeError("serial is not connected")
-        if self.cfg.verbose_tx:
+        if log and self.cfg.verbose_tx:
             self.log("info", f"TX: {cmd}")
         self.ser.write((cmd + self.cfg.eol).encode("utf-8"))
         self.ser.flush()
@@ -156,13 +170,33 @@ class MirobotGCode:
             self.send_and_wait(cmd, 1.5, warn_only=True)
         self.send_and_wait("M50", 2.0, warn_only=True)
 
-    def wait_motion_done(self, timeout: float = 12.0) -> None:
-        # M400 is widely used as "wait for current moves to finish"; if firmware ignores it,
-        # this only produces a warning and the next wait_ok/move still protects the sequence.
-        self.send_and_wait("M400", timeout, warn_only=True)
+    def wait_motion_done(self, timeout: Optional[float] = None) -> None:
+        timeout = float(timeout if timeout is not None else self.cfg.status_wait_timeout_s)
+        if self.cfg.use_m400:
+            self.send_and_wait("M400", timeout, warn_only=True)
+            return
+
+        if self.cfg.use_status_wait:
+            t0 = time.time()
+            got_status = False
+            while time.time() - t0 < timeout:
+                ok, state, _xyz, _rpy, _raw = self.query_status_pose(log_tx=False)
+                if ok:
+                    got_status = True
+                    if str(state).strip().lower() == "idle":
+                        time.sleep(max(0.0, float(self.cfg.motion_settle_s)))
+                        return
+                time.sleep(0.10)
+            if got_status:
+                self.log("warn", f"status wait timed out after {timeout:.1f}s")
+
+        time.sleep(max(0.0, float(self.cfg.motion_settle_s)))
 
     def move_xyz(self, x: float, y: float, z: float, *, feed: Optional[float] = None, timeout: Optional[float] = None) -> bool:
-        x, y, z = clamp_xyz(x, y, z, self.cfg.bounds)
+        raw = (float(x), float(y), float(z))
+        (x, y, z), changed = clamp_xyz_report(raw[0], raw[1], raw[2], self.cfg.bounds)
+        if changed:
+            self.log("warn", f"requested pose {raw} was clamped to {(x, y, z)} by workspace {self.cfg.bounds}")
         feed = float(feed if feed is not None else self.cfg.default_feed)
         cmd = f"G1 X{x:.3f} Y{y:.3f} Z{z:.3f} F{feed:.1f}"
         return self.send_and_wait(cmd, timeout or self.cfg.command_timeout_s)
@@ -178,18 +212,17 @@ class MirobotGCode:
             self.pump_off()
         except Exception:
             pass
-        # M0 is safer than guessing firmware-specific hard reset codes.
         try:
             self.send_and_wait("M0", 1.0, warn_only=True)
         except Exception:
             pass
 
-    def query_status_pose(self) -> Tuple[bool, str, Optional[Vec3], Optional[Vec3], str]:
+    def query_status_pose(self, *, log_tx: bool = True) -> Tuple[bool, str, Optional[Vec3], Optional[Vec3], str]:
         if self.ser is None:
             return False, "SERIAL_OFF", None, None, ""
         try:
             self.ser.reset_input_buffer()
-            self.tx("?")
+            self.tx("?", log=log_tx)
             raw = b""
             t0 = time.time()
             while time.time() - t0 < 0.6:
@@ -223,24 +256,29 @@ class MirobotGCode:
     ) -> bool:
         should_stop = should_stop or (lambda: False)
         feed = float(feed if feed is not None else self.cfg.default_feed)
-        x_pick, y_pick, z_pick = clamp_xyz(*pick_xyz, self.cfg.bounds)
-        x_place, y_place, z_place = clamp_xyz(*place_xyz, self.cfg.bounds)
+        (x_pick, y_pick, z_pick), pick_changed = clamp_xyz_report(*pick_xyz, self.cfg.bounds)
+        (x_place, y_place, z_place), place_changed = clamp_xyz_report(*place_xyz, self.cfg.bounds)
+        if pick_changed:
+            self.log("warn", f"pick pose {pick_xyz} clamped to {(x_pick, y_pick, z_pick)}")
+        if place_changed:
+            self.log("warn", f"place pose {place_xyz} clamped to {(x_place, y_place, z_place)}")
+
         travel_z_pick = clamp(float(travel_z), self.cfg.z_min, self.cfg.z_max)
         travel_z_place = clamp(float(place_approach_z if place_approach_z is not None else travel_z), self.cfg.z_min, self.cfg.z_max)
 
-        p_pick_top = clamp_xyz(x_pick, y_pick, travel_z_pick, self.cfg.bounds)
-        p_place_top = clamp_xyz(x_place, y_place, travel_z_place, self.cfg.bounds)
+        p_pick_top = (x_pick, y_pick, travel_z_pick)
+        p_place_top = (x_place, y_place, travel_z_place)
 
-        def guarded_move(p: Vec3, timeout: float = 12.0) -> bool:
+        def guarded_move(p: Vec3, timeout_s: float = 12.0) -> bool:
             if should_stop():
                 self.log("warn", "stop requested before move")
                 return False
-            return self.move_xyz(*p, feed=feed, timeout=timeout)
+            return self.move_xyz(*p, feed=feed, timeout=timeout_s)
 
         if not guarded_move(p_pick_top):
             return False
         self.wait_motion_done()
-        if not guarded_move((x_pick, y_pick, z_pick), timeout=8.0):
+        if not guarded_move((x_pick, y_pick, z_pick), timeout_s=8.0):
             return False
         self.wait_motion_done()
         if should_stop():
@@ -248,7 +286,7 @@ class MirobotGCode:
         self.pump_on()
         time.sleep(max(0.0, float(self.cfg.pump_dwell_s)))
 
-        if not guarded_move(p_pick_top, timeout=8.0):
+        if not guarded_move(p_pick_top, timeout_s=8.0):
             self.pump_off()
             return False
         self.wait_motion_done()
@@ -263,13 +301,13 @@ class MirobotGCode:
             n_points=n_points,
         )
         for p in path[1:]:
-            if not guarded_move(p, timeout=8.0):
+            if not guarded_move(p, timeout_s=8.0):
                 self.pump_off()
                 return False
             time.sleep(0.005)
         self.wait_motion_done()
 
-        if not guarded_move((x_place, y_place, z_place), timeout=8.0):
+        if not guarded_move((x_place, y_place, z_place), timeout_s=8.0):
             self.pump_off()
             return False
         self.wait_motion_done()
@@ -277,6 +315,6 @@ class MirobotGCode:
         self.pump_off()
         time.sleep(0.1)
 
-        ok = guarded_move(p_place_top, timeout=8.0)
+        ok = guarded_move(p_place_top, timeout_s=8.0)
         self.wait_motion_done()
         return ok

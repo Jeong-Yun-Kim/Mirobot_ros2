@@ -1,12 +1,13 @@
-Metadata-Version: 2.1
-Name: vision-robot
+Metadata-Version: 2.4
+Name: vision_robot
 Version: 0.0.0
 Summary: YOLO-based vision control for Mirobot
-Home-page: UNKNOWN
 Maintainer: kjy
 Maintainer-email: love2851030@naver.com
 License: Apache License 2.0
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: setuptools
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary

@@ -22,23 +22,26 @@ def rotate_xy(dx: float, dy: float, deg_ccw: float) -> Tuple[float, float]:
 class PixelToRobotMapper:
     """Convert image pixel center (u, v) to Mirobot base XY.
 
-    The default mode is dynamic/fallback mapping from your calibration direction code:
+    Dynamic mapping follows the direction you verified with xyz_finddirection.py:
       camera pixel: +u right, +v down
       robot XY:     +X up,    +Y left
       dX = -dv * scale, dY = -du * scale
 
-    Optional static mode keeps the older vision_robot_node.py style:
-      pixel -> board plane by H_inv -> base by T_base_board.
+    This version also protects against the common bug where the camera opens at
+    640x480 but the YAML still contains a 1280x720 origin like (640, 360).
+    If the configured origin is outside the actual frame, it automatically falls
+    back to the actual frame center.
     """
 
     static_board_path: str = ""
     use_static: bool = False
     fallback_origin_u: float = 640.0
     fallback_origin_v: float = 360.0
-    fallback_origin_x: float = 140.0
+    fallback_origin_x: float = 200.0
     fallback_origin_y: float = 0.0
-    fallback_mm_per_px: float = 0.5
+    fallback_mm_per_px: float = 0.25
     dynamic_rotation_deg: float = 0.0
+    auto_origin_if_invalid: bool = True
 
     H_inv: Optional[np.ndarray] = None
     T_base_board: Optional[np.ndarray] = None
@@ -67,6 +70,32 @@ class PixelToRobotMapper:
             raise ValueError(f"T_base_board must be 4x4, got {self.T_base_board.shape}")
         self.mode = "static"
 
+    def adjust_origin_for_image_size(self, width: int, height: int) -> Optional[str]:
+        """Auto-fix dynamic origin when YAML origin does not fit actual camera size.
+
+        Returns a message if a change was made, otherwise None.
+        """
+        if self.mode != "dynamic" or not self.auto_origin_if_invalid:
+            return None
+        width = int(width)
+        height = int(height)
+        if width <= 0 or height <= 0:
+            return None
+
+        u = float(self.fallback_origin_u)
+        v = float(self.fallback_origin_v)
+        invalid = (u < 0.0) or (v < 0.0) or (u >= float(width)) or (v >= float(height))
+        if not invalid:
+            return None
+
+        old = (u, v)
+        self.fallback_origin_u = width / 2.0
+        self.fallback_origin_v = height / 2.0
+        return (
+            f"dynamic calibration origin_uv {old} is outside actual frame "
+            f"{width}x{height}; auto set to ({self.fallback_origin_u:.1f}, {self.fallback_origin_v:.1f})"
+        )
+
     def pixel_to_base_xy(self, u: float, v: float) -> Tuple[float, float]:
         if self.mode == "static" and self.H_inv is not None and self.T_base_board is not None:
             pt_img = np.array([float(u), float(v), 1.0], dtype=np.float64).reshape(3, 1)
@@ -87,3 +116,17 @@ class PixelToRobotMapper:
         dy = -du * float(self.fallback_mm_per_px)
         dx, dy = rotate_xy(dx, dy, self.dynamic_rotation_deg)
         return float(self.fallback_origin_x) + dx, float(self.fallback_origin_y) + dy
+
+    def debug_mapping_text(self, u: float, v: float) -> str:
+        du = float(u) - float(self.fallback_origin_u)
+        dv = float(v) - float(self.fallback_origin_v)
+        dx = -dv * float(self.fallback_mm_per_px)
+        dy = -du * float(self.fallback_mm_per_px)
+        dxr, dyr = rotate_xy(dx, dy, self.dynamic_rotation_deg)
+        x = float(self.fallback_origin_x) + dxr
+        y = float(self.fallback_origin_y) + dyr
+        return (
+            f"uv=({u:.1f},{v:.1f}) duv=({du:.1f},{dv:.1f}) "
+            f"dxy=({dxr:.1f},{dyr:.1f}) xy=({x:.1f},{y:.1f}) "
+            f"scale={self.fallback_mm_per_px:.3f}"
+        )

@@ -10,6 +10,7 @@ def generate_launch_description():
     bridge_config = LaunchConfiguration("bridge_config")
     server_domain = LaunchConfiguration("server_domain")
     robot_domain = LaunchConfiguration("robot_domain")
+    debug_view = LaunchConfiguration("debug_view")
 
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -24,6 +25,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument("server_domain", default_value="18", description="Raspberry Pi/server ROS_DOMAIN_ID."),
         DeclareLaunchArgument("robot_domain", default_value="30", description="Laptop/Mirobot ROS_DOMAIN_ID."),
+        DeclareLaunchArgument("debug_view", default_value="false", description="Show OpenCV YOLO debug window on the laptop."),
 
         # Bridge /robot/cmd and /robot/stop from server_domain -> robot_domain,
         # and /robot/done(/robot/status) back from robot_domain -> server_domain.
@@ -38,7 +40,7 @@ def generate_launch_description():
             executable="delivery_node",
             name="mirobot_order_delivery_node",
             output="screen",
-            parameters=[params],
+            parameters=[params, {"debug.view": debug_view}],
             additional_env={"ROS_DOMAIN_ID": robot_domain},
         ),
     ])

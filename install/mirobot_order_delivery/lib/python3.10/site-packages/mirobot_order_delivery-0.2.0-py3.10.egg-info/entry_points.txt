@@ -1,4 +1,3 @@
 [console_scripts]
 delivery_node = mirobot_order_delivery.delivery_node:main
 simulate_order = mirobot_order_delivery.simulate_order:main
-

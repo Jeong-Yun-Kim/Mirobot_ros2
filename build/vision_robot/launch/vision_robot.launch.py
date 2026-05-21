@@ -1,1 +1,0 @@
-/home/kjy/Mirobot_ros2/src/vision_robot/launch/vision_robot.launch.py

@@ -1,19 +1,25 @@
 from __future__ import annotations
 
 import math
-from typing import Callable, Iterable, List, Sequence, Tuple
+from typing import List, Tuple
 
 Vec3 = Tuple[float, float, float]
 Bounds = Tuple[float, float, float, float, float, float]
 
 
 def clamp(v: float, vmin: float, vmax: float) -> float:
-    return max(vmin, min(vmax, v))
+    return max(vmin, min(vmax, float(v)))
 
 
 def clamp_xyz(x: float, y: float, z: float, bounds: Bounds) -> Vec3:
     x_min, x_max, y_min, y_max, z_min, z_max = bounds
-    return (clamp(float(x), x_min, x_max), clamp(float(y), y_min, y_max), clamp(float(z), z_min, z_max))
+    return (clamp(x, x_min, x_max), clamp(y, y_min, y_max), clamp(z, z_min, z_max))
+
+
+def clamp_xyz_report(x: float, y: float, z: float, bounds: Bounds, eps: float = 1e-6) -> Tuple[Vec3, bool]:
+    clamped = clamp_xyz(x, y, z, bounds)
+    changed = (abs(clamped[0] - float(x)) > eps) or (abs(clamped[1] - float(y)) > eps) or (abs(clamped[2] - float(z)) > eps)
+    return clamped, changed
 
 
 def make_bezier_arc(
@@ -29,8 +35,10 @@ def make_bezier_arc(
 ) -> List[Vec3]:
     """Quadratic Bezier arc used for safe pick-and-place motion.
 
-    This keeps the simple path style used in the uploaded vision_robot_node.py, but makes
-    the workspace bounds configurable.
+    B(t) = (1-t)^2 P0 + 2(1-t)t P1 + t^2 P2
+
+    P1 is placed halfway in XY and lifted in Z.  The generated points are
+    clamped to the configured workspace as a last safety guard.
     """
     x1, y1, z1 = p_start
     x2, y2, z2 = p_end
@@ -41,7 +49,7 @@ def make_bezier_arc(
     h = max(float(h_min), float(k) * d)
 
     z_mid = max(z1, z2) + h
-    z_mid = min(z_mid, z_max - z_max_margin)
+    z_mid = min(z_mid, z_max - float(z_max_margin))
     if z_mid_min is not None:
         z_mid = max(z_mid, float(z_mid_min))
     z_mid = clamp(z_mid, z_min, z_max)
@@ -49,9 +57,9 @@ def make_bezier_arc(
     xm = (x1 + x2) / 2.0
     ym = (y1 + y2) / 2.0
 
-    p0 = (x1, y1, z1)
-    p1 = (xm, ym, z_mid)
-    p2 = (x2, y2, z2)
+    p0 = (float(x1), float(y1), float(z1))
+    p1 = (float(xm), float(ym), float(z_mid))
+    p2 = (float(x2), float(y2), float(z2))
 
     path: List[Vec3] = []
     for i in range(n_points):

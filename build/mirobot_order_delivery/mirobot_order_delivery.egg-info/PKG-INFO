@@ -1,12 +1,13 @@
-Metadata-Version: 2.1
-Name: mirobot-order-delivery
+Metadata-Version: 2.4
+Name: mirobot_order_delivery
 Version: 0.2.0
 Summary: Laptop-side Mirobot order worker with YOLO, pump control, dynamic calibration, and domain_bridge support.
-Home-page: UNKNOWN
 Maintainer: student
 Maintainer-email: student@example.com
 License: MIT
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: setuptools
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary

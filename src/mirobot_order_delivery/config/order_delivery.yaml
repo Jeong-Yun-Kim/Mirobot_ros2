@@ -1,7 +1,5 @@
 mirobot_order_delivery_node:
   ros__parameters:
-    # These topic names stay identical on both domains.
-    # domain_bridge copies them between server_domain and robot_domain.
     topics.robot_cmd: "/robot/cmd"
     topics.robot_stop: "/robot/stop"
     topics.robot_done: "/robot/done"
@@ -14,8 +12,8 @@ mirobot_order_delivery_node:
     serial.toggle_dtr_rts: true
     serial.verbose_tx: true
 
-    # Conservative workspace from your existing vision_robot_node.py.
-    workspace.x_min: 140.0
+    # Keep this conservative first. X=0 caused/risks soft-limit in your logs.
+    workspace.x_min: 0.0
     workspace.x_max: 290.0
     workspace.y_min: -270.0
     workspace.y_max: 270.0
@@ -29,67 +27,59 @@ mirobot_order_delivery_node:
     camera.settle_s: 0.4
     camera.flush_frames: 3
 
-    # Same default YOLO paths you used before. Change only if your PC path differs.
     yolo.repo: "/home/kjy/yolov5"
     yolo.weight: "/home/kjy/yolov5/runs/train/exp/weights/best.onnx"
     yolo.conf: 0.50
     yolo.iou: 0.45
     yolo.size: 640
 
-    # Default is dynamic mapping based on your calibration direction result:
-    # camera pixel: +u right, +v down
-    # robot XY:     +X up,    +Y left
-    # dX = -dv * mm_per_px, dY = -du * mm_per_px
-    # If you later want static homography, set calibration.mode: "static"
-    # and provide data/static_board_pose.npz or an absolute path below.
-    calibration.mode: "dynamic"          # "dynamic" or "static"
-    calibration.use_static: false         # legacy alias; keep false for dynamic
+    calibration.mode: "dynamic"
+    calibration.use_static: false
     calibration.static_board_path: ""
     calibration.fallback_origin_u: 640.0
     calibration.fallback_origin_v: 360.0
-    calibration.fallback_origin_x: 140.0
+    calibration.fallback_origin_x: 200.0
     calibration.fallback_origin_y: 0.0
-    calibration.fallback_mm_per_px: 0.50
-    calibration.dynamic_rotation_deg: 0.0 # tune if camera axes are slightly rotated
+    # 0.50 made X jump to ~95 in your log. Start with 0.25, then tune slowly.
+    calibration.fallback_mm_per_px: 0.20
+    calibration.dynamic_rotation_deg: 0.0
+    # If camera opens as 640x480 but origin is 640,360, auto switch origin to 320,240.
+    calibration.auto_origin_if_invalid: true
 
-    # Rough coordinates you gave:
-    # cube/front observe = (140, 0, 150)
-    # box/left approach  = around (200, 0, 150)
-    # Drop Z should be lower than approach Z and must be tuned to your box height.
-    poses.observe_xyz: [140.0, 0.0, 120.0]
-    poses.box_xyz: [200.0, 0.0, 120.0]
+    poses.observe_xyz: [200.0, 0.0, 220.0]
+    # Safer test drop point. If you really need X=0, verify with manual XYZ first,
+    # then lower workspace.x_min and box_xyz.x gradually.
+    poses.box_xyz: [0.0, 250.0, 170.0]
     poses.pick_z: 55.0
-    poses.travel_z: 150.0
-    poses.box_approach_z: 150.0
-    poses.pick_x_offset_mm: 0.0
-    poses.pick_y_offset_mm: 15.0
+    poses.travel_z: 220.0
+    poses.box_approach_z: 220.0
+    poses.pick_x_offset_mm: 10.0
+    poses.pick_y_offset_mm: 5.0
 
     motion.feed: 2000.0
     motion.arc_points: 30
+    # M400 produced `Invalid gcode ID:23` on your Mirobot firmware.
+    motion.use_m400: false
+    motion.use_status_wait: false
+    motion.settle_after_move_s: 0.20
+    motion.status_wait_timeout_s: 1.0
 
     pump.pwm: 1000
     pump.pick_dwell_s: 1.5
     pump.drop_dwell_s: 0.4
 
-    # The node repeats pick/place according to these counts from /robot/cmd JSON.
-    # Example: {"task":"fill", "id":1, "red":2, "green":1, "blue":0}
     task.order_sequence: ["red", "green", "blue"]
     task.detect_timeout_s: 5.0
     task.detect_min_hits: 1
     task.return_to_observe_after_each_cube: true
-
-    # Kept true so an old server that sends "pack" will not hang.
-    # It does not do packaging motion; it immediately publishes /robot/done for pack.
     task.pack_passthrough: true
     task.publish_failed_done: false
     task.allow_fixed_pick_fallback: false
 
-    # Only used when task.allow_fixed_pick_fallback=true.
     fixed_pick.red_xyz: [140.0, -90.0, 55.0]
     fixed_pick.green_xyz: [140.0, 0.0, 55.0]
     fixed_pick.blue_xyz: [140.0, 90.0, 55.0]
 
-    # Keep false for a real box/container. Enable to spread drops in a simple grid.
     box_grid.enabled: false
     box_grid.cols: 3
     box_grid.step_mm: 24.0
@@ -97,3 +87,7 @@ mirobot_order_delivery_node:
 
     debug.view: false
     debug.window_name: "mirobot_order_delivery"
+    debug.max_width: 960
+    debug.save_latest_frame: true
+    debug.frame_path: "/tmp/mirobot_order_delivery_debug_latest.jpg"
+    debug.save_interval_s: 0.5

@@ -5,8 +5,9 @@ import os
 import queue
 import threading
 import time
+import traceback
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence
 
 import cv2
 import rclpy
@@ -15,7 +16,7 @@ from rclpy.node import Node
 from std_msgs.msg import String
 
 from .calibration import PixelToRobotMapper
-from .geometry import Vec3, clamp_xyz
+from .geometry import Vec3, clamp_xyz_report
 from .robot_gcode import MirobotGCode, RobotConfig
 from .vision import CvCamera, Detection, YoloCubeDetector, choose_best_detection, draw_detections
 
@@ -86,6 +87,10 @@ class MirobotOrderDeliveryNode(Node):
             command_timeout_s=float(self.param("serial.command_timeout_s", 12.0)),
             toggle_dtr_rts=as_bool(self.param("serial.toggle_dtr_rts", True)),
             verbose_tx=as_bool(self.param("serial.verbose_tx", True)),
+            use_m400=as_bool(self.param("motion.use_m400", False)),
+            use_status_wait=as_bool(self.param("motion.use_status_wait", False)),
+            motion_settle_s=float(self.param("motion.settle_after_move_s", 0.20)),
+            status_wait_timeout_s=float(self.param("motion.status_wait_timeout_s", 1.0)),
         )
 
         self.camera_id = int(self.param("camera.id", 4))
@@ -112,30 +117,26 @@ class MirobotOrderDeliveryNode(Node):
             use_static=use_static,
             fallback_origin_u=float(self.param("calibration.fallback_origin_u", 640.0)),
             fallback_origin_v=float(self.param("calibration.fallback_origin_v", 360.0)),
-            fallback_origin_x=float(self.param("calibration.fallback_origin_x", 140.0)),
+            fallback_origin_x=float(self.param("calibration.fallback_origin_x", 200.0)),
             fallback_origin_y=float(self.param("calibration.fallback_origin_y", 0.0)),
-            fallback_mm_per_px=float(self.param("calibration.fallback_mm_per_px", 0.5)),
+            fallback_mm_per_px=float(self.param("calibration.fallback_mm_per_px", 0.25)),
             dynamic_rotation_deg=float(self.param("calibration.dynamic_rotation_deg", 0.0)),
+            auto_origin_if_invalid=as_bool(self.param("calibration.auto_origin_if_invalid", True)),
         )
         try:
             self.mapper.load()
-            self.get_logger().info(
-                f"calibration mapper mode: {self.mapper.mode} "
-                f"origin_uv=({self.mapper.fallback_origin_u:.1f},{self.mapper.fallback_origin_v:.1f}) "
-                f"origin_xy=({self.mapper.fallback_origin_x:.1f},{self.mapper.fallback_origin_y:.1f}) "
-                f"scale={self.mapper.fallback_mm_per_px:.4f} rot={self.mapper.dynamic_rotation_deg:.2f} "
-                f"static_path={self.mapper.static_board_path}"
-            )
+            self.log_mapper_config()
         except Exception as exc:
-            self.get_logger().warn(f"static calibration load failed; dynamic mapping will be used: {exc}")
+            self.get_logger().warning(f"static calibration load failed; dynamic mapping will be used: {exc}")
             self.mapper.use_static = False
             self.mapper.load()
+            self.log_mapper_config()
 
-        self.observe_xyz = tuple(as_float_list(self.param("poses.observe_xyz", [140.0, 0.0, 150.0]), 3, "poses.observe_xyz"))  # type: ignore[assignment]
-        self.box_xyz = tuple(as_float_list(self.param("poses.box_xyz", [200.0, 0.0, 70.0]), 3, "poses.box_xyz"))  # type: ignore[assignment]
+        self.observe_xyz = tuple(as_float_list(self.param("poses.observe_xyz", [200.0, 0.0, 220.0]), 3, "poses.observe_xyz"))  # type: ignore[assignment]
+        self.box_xyz = tuple(as_float_list(self.param("poses.box_xyz", [140.0, 250.0, 170.0]), 3, "poses.box_xyz"))  # type: ignore[assignment]
         self.pick_z = float(self.param("poses.pick_z", 55.0))
-        self.travel_z = float(self.param("poses.travel_z", 150.0))
-        self.box_approach_z = float(self.param("poses.box_approach_z", 150.0))
+        self.travel_z = float(self.param("poses.travel_z", 220.0))
+        self.box_approach_z = float(self.param("poses.box_approach_z", 220.0))
         self.pick_y_offset_mm = float(self.param("poses.pick_y_offset_mm", 15.0))
         self.pick_x_offset_mm = float(self.param("poses.pick_x_offset_mm", 0.0))
 
@@ -159,6 +160,14 @@ class MirobotOrderDeliveryNode(Node):
 
         self.debug_view = as_bool(self.param("debug.view", False))
         self.debug_window = str(self.param("debug.window_name", "mirobot_order_delivery"))
+        self.debug_max_width = int(self.param("debug.max_width", 960))
+        self.debug_save_latest_frame = as_bool(self.param("debug.save_latest_frame", True))
+        self.debug_frame_path = str(self.param("debug.frame_path", "/tmp/mirobot_order_delivery_debug_latest.jpg"))
+        self.debug_save_interval_s = float(self.param("debug.save_interval_s", 0.5))
+        self._debug_frame_lock = threading.Lock()
+        self._latest_debug_frame = None
+        self._debug_window_created = False
+        self._last_debug_save_t = 0.0
 
         self.robot = MirobotGCode(self.robot_cfg, logger=self.get_logger())
         self.camera = CvCamera(self.camera_id, self.camera_width, self.camera_height, self.camera_backend, logger=self.get_logger())
@@ -185,8 +194,21 @@ class MirobotOrderDeliveryNode(Node):
         self.worker = threading.Thread(target=self.worker_loop, daemon=True)
         self.worker.start()
 
+        # OpenCV GUI is unstable when imshow() is called from the worker thread.
+        # The worker only prepares frames; this timer displays them in the ROS spin thread.
+        self.debug_timer = self.create_timer(0.10, self.debug_timer_cb)
+
         self.publish_status("ready", note="node started")
         self.get_logger().info(f"subscribed: {self.cmd_topic}, stop: {self.stop_topic}, done: {self.done_topic}")
+
+    def log_mapper_config(self) -> None:
+        self.get_logger().info(
+            f"calibration mapper mode: {self.mapper.mode} "
+            f"origin_uv=({self.mapper.fallback_origin_u:.1f},{self.mapper.fallback_origin_v:.1f}) "
+            f"origin_xy=({self.mapper.fallback_origin_x:.1f},{self.mapper.fallback_origin_y:.1f}) "
+            f"scale={self.mapper.fallback_mm_per_px:.4f} rot={self.mapper.dynamic_rotation_deg:.2f} "
+            f"static_path={self.mapper.static_board_path}"
+        )
 
     def param(self, name: str, default):
         self.declare_parameter(name, default)
@@ -205,7 +227,7 @@ class MirobotOrderDeliveryNode(Node):
 
         task = str(data.get("task", "fill")).lower()
         if task not in {"fill", "pack"}:
-            self.get_logger().warn(f"unsupported task '{task}', command ignored")
+            self.get_logger().warning(f"unsupported task '{task}', command ignored")
             self.publish_status("ignored", task=task, note="unsupported task")
             return
 
@@ -217,11 +239,11 @@ class MirobotOrderDeliveryNode(Node):
         if cmd in {"STOP", "ESTOP", "E-STOP", "PAUSE"}:
             self.stop_event.set()
             self.publish_status("stopping", note=cmd)
-            self.get_logger().warn(f"stop requested: {cmd}")
+            self.get_logger().warning(f"stop requested: {cmd}")
             try:
                 self.robot.emergency_soft_stop()
             except Exception as exc:
-                self.get_logger().warn(f"soft stop command failed: {exc}")
+                self.get_logger().warning(f"soft stop command failed: {exc}")
         elif cmd in {"START", "RESUME", "RESET"}:
             self.stop_event.clear()
             self.publish_status("resumed", note=cmd)
@@ -240,7 +262,7 @@ class MirobotOrderDeliveryNode(Node):
             try:
                 self.execute_command(order)
             except Exception as exc:
-                self.get_logger().exception(f"order execution crashed: {exc}")
+                self.get_logger().error(f"order execution crashed: {exc}\n{traceback.format_exc()}")
                 task = str(order.get("task", "fill")).lower()
                 order_id = order.get("id", order.get("order_id"))
                 self.publish_status("error", task=task, order_id=order_id, note=str(exc))
@@ -254,6 +276,13 @@ class MirobotOrderDeliveryNode(Node):
     def ensure_hardware_ready(self) -> None:
         self.robot.init_robot()
         self.camera.open()
+        actual_w, actual_h = self.camera.get_size()
+        self.camera_width = actual_w or self.camera_width
+        self.camera_height = actual_h or self.camera_height
+        msg = self.mapper.adjust_origin_for_image_size(self.camera_width, self.camera_height)
+        if msg:
+            self.get_logger().warning(msg)
+            self.log_mapper_config()
         self.detector.load()
 
     def execute_command(self, order: dict) -> None:
@@ -282,7 +311,8 @@ class MirobotOrderDeliveryNode(Node):
             return
 
         self.ensure_hardware_ready()
-        self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0)
+        if not self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0):
+            raise RuntimeError(f"failed to move to observe pose {self.observe_xyz}")
         self.robot.wait_motion_done()
 
         delivered = {"red": 0, "green": 0, "blue": 0}
@@ -296,7 +326,9 @@ class MirobotOrderDeliveryNode(Node):
                 return
 
             if self.return_to_observe_after_each_cube:
-                self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0)
+                if not self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0):
+                    self.publish_status("move_failed", task="fill", order_id=order_id, note="observe pose failed")
+                    return
                 self.robot.wait_motion_done()
                 time.sleep(max(0.0, self.camera_settle_s))
 
@@ -334,17 +366,11 @@ class MirobotOrderDeliveryNode(Node):
             self.stats.delivered_blue = delivered["blue"]
             self.publish_status("cube_done", task="fill", order_id=order_id, color=color, delivered=delivered)
 
-        self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0)
+        if not self.robot.move_xyz(*self.observe_xyz, feed=self.robot_cfg.default_feed, timeout=12.0):
+            self.get_logger().warning(f"final observe move failed: {self.observe_xyz}")
         self.robot.wait_motion_done()
         self.publish_done("fill", order_id, ok=True, counts=counts, delivered=delivered)
         self.publish_status("fill_done", task="fill", order_id=order_id, delivered=delivered)
-
-    def param_runtime_cached(self, name: str, default):
-        # Some motion tuning values are useful to change in YAML. They are declared here once
-        # if not already declared; repeated get is safe.
-        if not self.has_parameter(name):
-            self.declare_parameter(name, default)
-        return self.get_parameter(name).value
 
     def extract_counts(self, order: dict) -> Dict[str, int]:
         result: Dict[str, int] = {}
@@ -361,7 +387,6 @@ class MirobotOrderDeliveryNode(Node):
         ordered_colors = [c for c in self.order_sequence if c in COLOR_KEYS]
         for color in ordered_colors:
             seq.extend([color] * int(counts.get(color, 0)))
-        # Include any valid color that was not in task.order_sequence.
         for color in COLOR_KEYS:
             if color not in ordered_colors:
                 seq.extend([color] * int(counts.get(color, 0)))
@@ -371,19 +396,25 @@ class MirobotOrderDeliveryNode(Node):
         det = self.detect_target(color)
         if det is not None:
             u, v = det.center
-            x, y = self.mapper.pixel_to_base_xy(u, v)
-            x += self.pick_x_offset_mm
-            y += self.pick_y_offset_mm
-            pick = clamp_xyz(x, y, self.pick_z, self.robot_cfg.bounds)
+            x_raw, y_raw = self.mapper.pixel_to_base_xy(u, v)
+            x_raw += self.pick_x_offset_mm
+            y_raw += self.pick_y_offset_mm
+            (x, y, z), changed = clamp_xyz_report(x_raw, y_raw, self.pick_z, self.robot_cfg.bounds)
+            if changed:
+                self.get_logger().warning(
+                    f"computed pick pose {(x_raw, y_raw, self.pick_z)} clamped to {(x, y, z)}. "
+                    f"Check fallback_mm_per_px/origin if this happens often. {self.mapper.debug_mapping_text(u, v)}"
+                )
             self.get_logger().info(
-                f"detected {color}: cls={det.cls}, conf={det.conf:.2f}, uv=({u:.1f},{v:.1f}) -> pick={pick}, mapper={self.mapper.mode}"
+                f"detected {color}: cls={det.cls}, conf={det.conf:.2f}, uv=({u:.1f},{v:.1f}) "
+                f"-> pick={(x, y, z)}, mapper={self.mapper.mode}; {self.mapper.debug_mapping_text(u, v)}"
             )
-            return pick
+            return (x, y, z)
 
         if self.allow_fixed_pick_fallback:
             fallback = self.fixed_pick_positions[color]
-            self.get_logger().warn(f"YOLO did not find {color}; using fixed fallback pose {fallback}")
-            return clamp_xyz(*fallback, self.robot_cfg.bounds)
+            self.get_logger().warning(f"YOLO did not find {color}; using fixed fallback pose {fallback}")
+            return clamp_xyz_report(*fallback, self.robot_cfg.bounds)[0]
 
         raise RuntimeError(f"YOLO did not find requested cube color: {color}")
 
@@ -391,11 +422,12 @@ class MirobotOrderDeliveryNode(Node):
         deadline = time.time() + max(0.1, self.detect_timeout_s)
         hits = 0
         best: Optional[Detection] = None
-        image_center = (self.camera_width / 2.0, self.camera_height / 2.0)
         last_detections: Sequence[Detection] = []
 
         while time.time() < deadline and not self.stop_event.is_set():
             frame = self.camera.read(flush=self.camera_flush_frames)
+            h, w = frame.shape[:2]
+            image_center = (w / 2.0, h / 2.0)
             detections = self.detector.detect(frame)
             last_detections = detections
             candidate = choose_best_detection(detections, color, image_center=image_center)
@@ -403,48 +435,105 @@ class MirobotOrderDeliveryNode(Node):
                 hits += 1
                 if best is None or candidate.conf > best.conf:
                     best = candidate
+                self.prepare_debug_frame(frame, detections, requested_color=color, candidate=candidate)
                 if hits >= max(1, self.detect_min_hits):
-                    if self.debug_view:
-                        self.show_debug(frame, detections)
                     return candidate
             else:
                 hits = 0
-
-            if self.debug_view:
-                self.show_debug(frame, detections)
+                self.prepare_debug_frame(frame, detections, requested_color=color, candidate=None)
             time.sleep(0.03)
 
         if best is not None:
-            self.get_logger().warn(f"using best non-stable detection for {color}: {best.cls} {best.conf:.2f}")
+            self.get_logger().warning(f"using best non-stable detection for {color}: {best.cls} {best.conf:.2f}")
             return best
-        self.get_logger().warn(f"no detection for {color}. last detections={[d.cls for d in last_detections]}")
+        self.get_logger().warning(f"no detection for {color}. last detections={[d.cls for d in last_detections]}")
         return None
 
-    def show_debug(self, frame, detections: Sequence[Detection]) -> None:
+    def prepare_debug_frame(self, frame, detections: Sequence[Detection], *, requested_color: str = "", candidate: Optional[Detection] = None) -> None:
+        if not self.debug_view and not self.debug_save_latest_frame:
+            return
         try:
             view = draw_detections(frame, detections)
-            cv2.imshow(self.debug_window, view)
-            cv2.waitKey(1)
+            h, w = view.shape[:2]
+            mean = float(frame.mean()) if frame is not None else -1.0
+            lines = [
+                f"frame={w}x{h} mean={mean:.1f} req={requested_color} det={len(detections)}",
+                f"origin_uv=({self.mapper.fallback_origin_u:.1f},{self.mapper.fallback_origin_v:.1f}) "
+                f"origin_xy=({self.mapper.fallback_origin_x:.1f},{self.mapper.fallback_origin_y:.1f}) scale={self.mapper.fallback_mm_per_px:.3f}",
+                f"workspace X[{self.robot_cfg.x_min:.0f},{self.robot_cfg.x_max:.0f}] "
+                f"Y[{self.robot_cfg.y_min:.0f},{self.robot_cfg.y_max:.0f}] Z[{self.robot_cfg.z_min:.0f},{self.robot_cfg.z_max:.0f}]",
+            ]
+            if candidate is not None:
+                u, v = candidate.center
+                x, y = self.mapper.pixel_to_base_xy(u, v)
+                x += self.pick_x_offset_mm
+                y += self.pick_y_offset_mm
+                lines.append(f"candidate {candidate.cls} conf={candidate.conf:.2f} {self.mapper.debug_mapping_text(u, v)} pick=({x:.1f},{y:.1f},{self.pick_z:.1f})")
+            y0 = 26
+            for line in lines:
+                cv2.putText(view, line, (12, y0), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2, cv2.LINE_AA)
+                y0 += 28
+            # Draw dynamic origin crosshair if visible.
+            ou, ov = int(self.mapper.fallback_origin_u), int(self.mapper.fallback_origin_v)
+            if 0 <= ou < w and 0 <= ov < h:
+                cv2.drawMarker(view, (ou, ov), (0, 255, 255), markerType=cv2.MARKER_CROSS, markerSize=24, thickness=2)
+
+            if self.debug_save_latest_frame:
+                now = time.time()
+                if now - self._last_debug_save_t >= max(0.1, self.debug_save_interval_s):
+                    cv2.imwrite(self.debug_frame_path, view)
+                    self._last_debug_save_t = now
+
+            if self.debug_view:
+                with self._debug_frame_lock:
+                    self._latest_debug_frame = view
         except Exception as exc:
-            self.get_logger().warn(f"debug view failed: {exc}")
+            self.get_logger().warning(f"debug frame prepare failed: {exc}")
+
+    def debug_timer_cb(self) -> None:
+        if not self.debug_view:
+            return
+        try:
+            with self._debug_frame_lock:
+                frame = None if self._latest_debug_frame is None else self._latest_debug_frame.copy()
+            if frame is None:
+                return
+            if not self._debug_window_created:
+                cv2.namedWindow(self.debug_window, cv2.WINDOW_NORMAL)
+                self._debug_window_created = True
+            display = frame
+            h, w = display.shape[:2]
+            if self.debug_max_width > 0 and w > self.debug_max_width:
+                scale = self.debug_max_width / float(w)
+                display = cv2.resize(display, (self.debug_max_width, max(1, int(h * scale))), interpolation=cv2.INTER_AREA)
+            cv2.imshow(self.debug_window, display)
+            key = cv2.waitKey(1) & 0xFF
+            if key in (ord("q"), 27):
+                self.get_logger().info("debug window disabled by key")
+                self.debug_view = False
+                cv2.destroyWindow(self.debug_window)
+        except Exception as exc:
+            self.get_logger().warning(f"debug view failed: {exc}")
             self.debug_view = False
 
     def compute_box_pose(self, cube_index: int) -> Vec3:
         x, y, z = self.box_xyz
-        if not self.box_grid_enabled:
-            return clamp_xyz(x, y, z, self.robot_cfg.bounds)
-        cols = max(1, int(self.box_grid_cols))
-        step = float(self.box_grid_step_mm)
-        col = cube_index % cols
-        row = cube_index // cols
-        centered_col = col - (cols - 1) / 2.0
-        if self.box_grid_axis == "x":
-            x += centered_col * step
-            y += row * step
-        else:
-            y += centered_col * step
-            x += row * step
-        return clamp_xyz(x, y, z, self.robot_cfg.bounds)
+        if self.box_grid_enabled:
+            cols = max(1, int(self.box_grid_cols))
+            step = float(self.box_grid_step_mm)
+            col = cube_index % cols
+            row = cube_index // cols
+            centered_col = col - (cols - 1) / 2.0
+            if self.box_grid_axis == "x":
+                x += centered_col * step
+                y += row * step
+            else:
+                y += centered_col * step
+                x += row * step
+        pose, changed = clamp_xyz_report(x, y, z, self.robot_cfg.bounds)
+        if changed:
+            self.get_logger().warning(f"box pose {(x, y, z)} clamped to {pose}; verify box_xyz and workspace")
+        return pose
 
     def publish_status(self, state: str, **kwargs) -> None:
         payload = {"state": state, **kwargs, "stamp": time.time()}
@@ -474,7 +563,7 @@ class MirobotOrderDeliveryNode(Node):
         except Exception:
             pass
         try:
-            if self.debug_view:
+            if self._debug_window_created:
                 cv2.destroyAllWindows()
         except Exception:
             pass
